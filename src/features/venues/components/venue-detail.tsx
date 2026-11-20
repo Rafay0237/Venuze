@@ -3,15 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import type { ReactNode } from "react";
 import { ArrowLeft, Star, Users, MapPin, Wifi, Car, Utensils, Check } from "lucide-react";
 import { useState } from "react";
-import { useVenue } from "@/features/venues/hooks/use-venues";
+import { useRequestBooking, useVenue } from "@/features/venues/hooks/use-venues";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToastStore } from "@/features/ui/store/toast-store";
 
-const amenityIcons: Record<string, React.ReactNode> = {
+const amenityIcons: Record<string, ReactNode> = {
   WiFi: <Wifi className="h-4 w-4" />,
   Parking: <Car className="h-4 w-4" />,
   Catering: <Utensils className="h-4 w-4" />,
@@ -21,6 +22,7 @@ export function VenueDetail() {
   const params = useParams<{ id: string }>();
   const { data: venue, isLoading, isError, refetch } = useVenue(params.id);
   const pushToast = useToastStore((s) => s.push);
+  const booking = useRequestBooking();
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState("20");
   const [hours, setHours] = useState("4");
@@ -58,6 +60,21 @@ export function VenueDetail() {
   }
 
   const total = venue.pricePerHour * Math.max(1, Number(hours) || 1);
+  const venueId = venue.id;
+
+  function handleBooking() {
+    if (!date) {
+      pushToast("Please select a date", "error");
+      return;
+    }
+
+    booking.mutate({
+      venueId,
+      date,
+      guests: Math.max(1, Number(guests) || 1),
+      hours: Math.max(1, Number(hours) || 1),
+    });
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -166,13 +183,9 @@ export function VenueDetail() {
           <Button
             className="mt-4 w-full"
             size="lg"
-            onClick={() => {
-              if (!date) {
-                pushToast("Please select a date", "error");
-                return;
-              }
-              pushToast("Booking request sent (demo)", "success");
-            }}
+            loading={booking.isPending}
+            disabled={booking.isPending}
+            onClick={handleBooking}
           >
             Check availability
           </Button>

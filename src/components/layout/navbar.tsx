@@ -3,46 +3,59 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Search, User } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 
-function formatSearchSummary(
-  location: string | null,
-  when: string | null,
-  guests: string | null,
-) {
-  const parts: string[] = [];
-
-  if (location?.trim()) {
-    parts.push(location.trim());
+function formatWhen(when: string | null) {
+  if (!when) return "Anytime";
+  const date = new Date(when);
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short",
+    });
   }
+  return when;
+}
 
-  if (when) {
-    const date = new Date(when);
-    if (!Number.isNaN(date.getTime())) {
-      parts.push(
-        date.toLocaleDateString(undefined, {
-          day: "numeric",
-          month: "short",
-        }),
-      );
-    }
-  }
+function formatGuests(guests: string | null) {
+  if (!guests?.trim()) return "Guests";
+  const value = guests.trim();
+  if (/guests?/i.test(value)) return value;
+  return `${value} Guests`;
+}
 
-  if (guests) {
-    const count = Number(guests);
-    if (!Number.isNaN(count) && count > 0) {
-      parts.push(`${count} ${count === 1 ? "Guest" : "Guests"}`);
-    }
-  }
-
-  if (parts.length === 0) {
-    return "Any destination · Any dates · Guests";
-  }
-
-  return parts.join(" · ");
+function SearchSummaryBar({
+  location,
+  when,
+  guests,
+  className,
+}: {
+  location: string;
+  when: string;
+  guests: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "inline-flex max-w-full items-center rounded-lg border border-[var(--color-border)] bg-white py-1.5 pl-5 pr-1.5 shadow-[0_4px_18px_rgba(0,0,0,0.08)]",
+        className,
+      )}
+      aria-label={`Current search: ${location}, ${when}, ${guests}`}
+    >
+      <span className="truncate text-sm font-medium text-[var(--color-ink)]">{location}</span>
+      <span className="mx-3 h-4 w-px shrink-0 bg-[var(--color-border)]" />
+      <span className="shrink-0 text-sm font-medium text-[var(--color-ink)]">{when}</span>
+      <span className="mx-3 h-4 w-px shrink-0 bg-[var(--color-border)]" />
+      <span className="truncate text-sm font-medium text-[var(--color-ink)]">{guests}</span>
+      <span className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--color-brand)] text-white">
+        <Search className="h-3.5 w-3.5" />
+      </span>
+    </div>
+  );
 }
 
 export function Navbar() {
@@ -59,11 +72,9 @@ export function Navbar() {
     router.push("/login");
   }
 
-  const summary = formatSearchSummary(
-    searchParams.get("location"),
-    searchParams.get("when"),
-    searchParams.get("guests"),
-  );
+  const locationLabel = searchParams.get("location")?.trim() || "Any destination";
+  const whenLabel = formatWhen(searchParams.get("when"));
+  const guestsLabel = formatGuests(searchParams.get("guests"));
 
   return (
     <header
@@ -98,12 +109,11 @@ export function Navbar() {
 
         {isSearch ? (
           <div className="hidden min-w-0 flex-1 justify-center px-4 md:flex">
-            <div
-              className="max-w-md truncate rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-5 py-2 text-center text-sm font-medium text-[var(--color-ink)]"
-              aria-label={`Current search: ${summary}`}
-            >
-              {summary}
-            </div>
+            <SearchSummaryBar
+              location={locationLabel}
+              when={whenLabel}
+              guests={guestsLabel}
+            />
           </div>
         ) : (
           <div className="flex-1" />
@@ -150,10 +160,13 @@ export function Navbar() {
       </div>
 
       {isSearch ? (
-        <div className="border-t border-[var(--color-border)] px-4 py-2 md:hidden">
-          <div className="truncate rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2 text-center text-sm font-medium text-[var(--color-ink)]">
-            {summary}
-          </div>
+        <div className="flex justify-center border-t border-[var(--color-border)] px-4 py-2 md:hidden">
+          <SearchSummaryBar
+            location={locationLabel}
+            when={whenLabel}
+            guests={guestsLabel}
+            className="w-full max-w-md justify-between"
+          />
         </div>
       ) : null}
     </header>

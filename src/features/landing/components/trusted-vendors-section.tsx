@@ -16,7 +16,7 @@ export function TrustedVendorsSection() {
   }
 
   return (
-    <section className="bg-[#FBF6E9] py-16 sm:py-20">
+    <section className="relative z-10 bg-[#FBF6E9] pb-64 pt-16 sm:pb-48 sm:pt-20 md:pb-52">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--color-ink)] sm:text-4xl">
@@ -61,8 +61,11 @@ export function TrustedVendorsSection() {
           onPrev={() => scrollByPage(-1)}
           onNext={() => scrollByPage(1)}
         />
+      </div>
 
-        <div className="mt-12 overflow-hidden rounded-2xl bg-gradient-to-r from-[#FF6B57] via-[#FF7A3D] to-[#F5B942] px-6 py-8 sm:px-10 sm:py-10">
+      {/* Overlaps 50% into this section and 50% into How It Works */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 translate-y-1/2 px-4 sm:px-6 lg:px-8">
+        <div className="pointer-events-auto mx-auto max-w-7xl overflow-hidden rounded-2xl bg-gradient-to-r from-[#FF786A] via-[#FF5037] to-[#FFC331] px-6 py-8 shadow-lg sm:px-10 sm:py-10 lg:px-16">
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-xl text-center lg:text-left">
               <h3 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">

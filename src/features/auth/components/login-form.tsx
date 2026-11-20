@@ -1,27 +1,20 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, Info } from "lucide-react";
 import { useState } from "react";
 import {
   loginSchema,
   type LoginFormValues,
 } from "@/features/auth/schemas/login-schema";
-import { loginRequest } from "@/features/auth/services/auth-service";
-import { useAuthStore } from "@/features/auth/store/auth-store";
-import { useToastStore } from "@/features/ui/store/toast-store";
+import { useLogin } from "@/features/auth/hooks/use-login";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const login = useAuthStore((s) => s.login);
-  const pushToast = useToastStore((s) => s.push);
   const [showPassword, setShowPassword] = useState(false);
+  const mutation = useLogin();
 
   const {
     register,
@@ -32,19 +25,6 @@ export function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
-    },
-  });
-
-  const mutation = useMutation({
-    mutationFn: loginRequest,
-    onSuccess: (data, variables) => {
-      login(data.token, variables.email);
-      pushToast("Logged in successfully", "success");
-      const next = searchParams.get("next");
-      router.replace(next && next.startsWith("/") ? next : "/");
-    },
-    onError: (error: Error) => {
-      pushToast(error.message || "Invalid credentials", "error");
     },
   });
 
@@ -94,7 +74,7 @@ export function LoginForm() {
 
         {mutation.isError ? (
           <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {(mutation.error as Error).message || "Unable to log in. Please try again."}
+            {mutation.error.message || "Unable to log in. Please try again."}
           </p>
         ) : null}
 

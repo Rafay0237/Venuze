@@ -1,4 +1,8 @@
-import type { Venue } from "@/types/venue";
+import type {
+  BookingRequestPayload,
+  BookingRequestResponse,
+  Venue,
+} from "@/types/venue";
 import { delay, venues } from "@/features/venues/data/mock-venues";
 
 export interface VenueSearchParams {
@@ -16,10 +20,13 @@ export async function fetchVenues(params: VenueSearchParams = {}): Promise<Venue
 
   return venues.filter((venue) => {
     if (params.location) {
-      const loc = params.location.toLowerCase();
-      const matchesLocation =
-        venue.city.toLowerCase().includes(loc) ||
-        venue.location.toLowerCase().includes(loc);
+      const tokens = params.location
+        .toLowerCase()
+        .split(/[,\s/]+/)
+        .map((t) => t.trim())
+        .filter((t) => t.length > 1);
+      const haystack = `${venue.city} ${venue.location}`.toLowerCase();
+      const matchesLocation = tokens.some((token) => haystack.includes(token));
       if (!matchesLocation) return false;
     }
     if (params.guests && venue.guests < params.guests) return false;
@@ -43,17 +50,34 @@ export async function fetchVenues(params: VenueSearchParams = {}): Promise<Venue
   });
 }
 
-export async function fetchFeaturedVenues(): Promise<Venue[]> {
-  await delay(500);
-  return venues.filter((v) => v.featured);
-}
-
 export async function fetchVenueById(id: string): Promise<Venue | null> {
   await delay(450);
   return venues.find((v) => v.id === id) ?? null;
 }
 
-export async function fetchSavedVenues(): Promise<Venue[]> {
-  await delay(550);
-  return venues.filter((v) => v.saved);
+export async function requestBooking(
+  payload: BookingRequestPayload,
+): Promise<BookingRequestResponse> {
+  await delay(600);
+
+  const venue = venues.find((v) => v.id === payload.venueId);
+  if (!venue) {
+    throw new Error("Venue not found");
+  }
+  if (!payload.date) {
+    throw new Error("Please select a date");
+  }
+
+  const hours = Math.max(1, payload.hours);
+  const guests = Math.max(1, payload.guests);
+
+  return {
+    id: `booking-${payload.venueId}-${Date.now()}`,
+    status: "pending",
+    venueId: payload.venueId,
+    date: payload.date,
+    guests,
+    hours,
+    total: venue.pricePerHour * hours,
+  };
 }

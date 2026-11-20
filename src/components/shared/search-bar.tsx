@@ -44,8 +44,8 @@ export function SearchBar({
   }
 
   return (
-    <div className={cn("relative mx-auto w-full max-w-[740px] pt-5", className)}>
-      <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center rounded-lg bg-white p-1 shadow-[0_8px_28px_rgba(0,0,0,0.16)]">
+    <div className={cn("relative mx-auto w-full max-w-[740px] sm:pt-5", className)}>
+      <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center rounded-lg bg-white p-1 px-2 shadow-[0_8px_28px_rgba(0,0,0,0.16)] sm:-top-2.5">
         <button
           type="button"
           onClick={() => setMode("venue")}
@@ -78,7 +78,7 @@ export function SearchBar({
 
       <form
         onSubmit={onSubmit}
-        className="flex w-full flex-col gap-2 rounded-lg bg-white p-3 pt-8 shadow-[0_16px_50px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:gap-0 sm:p-2 sm:pl-3"
+        className="flex w-full flex-col gap-2 rounded-lg bg-white p-3 pt-14 shadow-[0_16px_50px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:gap-0 sm:p-2 sm:pl-3"
       >
         <FieldSelect
           label="Where"

@@ -26,6 +26,7 @@ export interface Venue {
   lat: number;
   lng: number;
   instantBook: boolean;
+  size?: string;
   featured?: boolean;
   saved?: boolean;
 }
@@ -43,4 +44,21 @@ export interface CategoryItem {
   id: string;
   label: string;
   image: string;
+}
+
+export interface BookingRequestPayload {
+  venueId: string;
+  date: string;
+  guests: number;
+  hours: number;
+}
+
+export interface BookingRequestResponse {
+  id: string;
+  status: "pending";
+  venueId: string;
+  date: string;
+  guests: number;
+  hours: number;
+  total: number;
 }

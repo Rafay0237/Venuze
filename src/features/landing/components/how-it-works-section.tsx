@@ -6,7 +6,7 @@ import {
 
 export function HowItWorksSection() {
   return (
-    <section className="bg-white py-16 sm:py-20">
+    <section className="relative z-0 bg-white pb-16 pt-[22rem] sm:pb-20 sm:pt-64 md:pt-60 lg:pt-64">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[var(--color-ink)] sm:text-4xl">
@@ -23,28 +23,48 @@ export function HowItWorksSection() {
         <div className="mt-12 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="relative mx-auto w-full max-w-lg">
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {howItWorksImages.map((image) => (
-                <div
-                  key={image.src}
-                  className="relative aspect-[4/3] overflow-hidden rounded-2xl"
-                >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 45vw, 240px"
-                  />
-                </div>
-              ))}
+              {/* Left column — shifted down */}
+              <div className="flex flex-col gap-3 pt-8 sm:gap-4 sm:pt-12">
+                {[howItWorksImages[0], howItWorksImages[2]].map((image) => (
+                  <div
+                    key={image.src}
+                    className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem]"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 45vw, 240px"
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Right column — shifted up */}
+              <div className="flex flex-col gap-3 pb-8 sm:gap-4 sm:pb-12">
+                {[howItWorksImages[1], howItWorksImages[3]].map((image) => (
+                  <div
+                    key={image.src}
+                    className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem]"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 45vw, 240px"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg sm:h-20 sm:w-20">
+            <div className="absolute left-1/2 top-1/2 flex h-16 w-16 lg:h-28 lg:w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg sm:h-20 sm:w-20">
               <Image
                 src="/images/sec-5-vector.svg"
                 alt=""
                 width={40}
                 height={37}
-                className="h-8 w-auto sm:h-10"
+                className="h-8 w-auto sm:h-10 lg:h-14 lg:w-14"
               />
             </div>
           </div>

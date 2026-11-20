@@ -85,7 +85,7 @@ export function Footer() {
               height={44}
               className="h-11 w-11 lg:h-13 lg:w-13 shrink-0 object-contain"
             />
-            <p className="text-lg font-bold leading-snug text-white sm:text-xl max-w-md">
+            <p className="text-lg font-bold leading-snug text-white sm:text-xl max-w-md lg:mt-2">
               Make it memorable—book the perfect venue and the pros who make it shine.
             </p>
           </div>
@@ -93,13 +93,13 @@ export function Footer() {
           <div className="grid flex-1 grid-cols-2 gap-8 sm:grid-cols-4 lg:gap-10">
             {columns.map((column) => (
               <div key={column.title}>
-                <h3 className="text-base font-semibold text-white">{column.title}</h3>
-                <ul className="mt-4 space-y-2.5">
+                <h3 className="text-base font-semibold text-[#A6A6A6]">{column.title}</h3>
+                <ul className="mt-2">
                   {column.links.map((link) => (
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-sm text-[#A0A0A0] transition hover:text-white"
+                        className="text-xs text-[#A0A0A0] transition hover:text-white"
                       >
                         {link.label}
                       </Link>
@@ -111,7 +111,7 @@ export function Footer() {
           </div>
           </div>
 
-          <div className="w-full shrink-0 max-w-md ml-auto mt-auto">
+          <div className="w-full shrink-0 max-w-md ml-auto ">
             <h3 className="text-xl font-semibold text-white">Get in Touch</h3>
             <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
               <input
